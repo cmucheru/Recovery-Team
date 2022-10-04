@@ -6,9 +6,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// variable for detected apogee height
+
 float MAX_ALTITUDE = 0;
+
 float DROGUE_ALTITUDE = 0;
+
+int apogeeCounter = 0;
 
 // This checks that we have started ascent
 // If we have a positive 20 metres displacement upwards
@@ -25,12 +28,15 @@ int checkInFlight(float altitude)
   }
 }
 
-// This checks that we have reached apogee
-// At apogee velocity is zero so we check for velocity less than or equal to zero
-// As redundancy we check if previous altitude is greater than current altitude
+// This checks that we have reached apogee and begun descent
+// we check if previous altitude is greater than current altitude. To be certain, this has to be true at least 30 times
 int checkForApogee(float velocity, float currentAltitude, float previousAltitude)
 {
-  if (velocity <= 0 || currentAltitude < previousAltitude)
+  if (currentAltitude < previousAltitude)
+  {
+    apogeeCounter++;
+  }
+  if (apogeeCounter == MIN_APOGEE_COUNT)
   {
     MAX_ALTITUDE = currentAltitude;
     return BALLISTIC_DESCENT_STATE;

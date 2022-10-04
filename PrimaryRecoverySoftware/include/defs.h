@@ -43,7 +43,10 @@ WiFiClient espClient;
 PubSubClient client(espClient);
 
 extern float BASE_ALTITUDE;
+
 extern float MAX_ALTITUDE;
+
+extern int apogeeCounter;
 
 const int PRE_FLIGHT_GROUND_STATE = 0;
 const int IN_FLIGHT_STATE = 1;
@@ -55,6 +58,9 @@ const int POST_FLIGHT_GROUND_STATE = 6;
 
 // TODO: carry out tests to know how much time
 const int EJECTION_PIN_ON_TIME_MS = 3000;
+
+//TODO: evaluate implication on time
+const int MIN_APOGEE_COUNT = 30;
 
 // TODO: review this values
 const int MAX_GROUND_STATE_DEVIATION = 2;

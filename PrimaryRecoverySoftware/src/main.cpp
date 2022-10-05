@@ -7,10 +7,10 @@
 
 TimerHandle_t ejectionTimerHandle = NULL;
 
-TaskHandle_t WiFiTelemetryTaskHandle;
-TaskHandle_t GetDataTaskHandle;
-TaskHandle_t SDWriteTaskHandle;
-TaskHandle_t GPSTaskHandle;
+TaskHandle_t WiFiTelemetryTaskHandle = NULL;
+TaskHandle_t GetDataTaskHandle = NULL;
+TaskHandle_t SDWriteTaskHandle = NULL;
+TaskHandle_t GPSTaskHandle = NULL;
 
 float BASE_ALTITUDE = 0;
 

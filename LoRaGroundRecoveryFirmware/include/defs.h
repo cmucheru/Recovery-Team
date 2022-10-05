@@ -14,8 +14,8 @@
 
 #define FREQUENCY_BAND 915E6
 
-const uint8_t GROUND_DROGUE_PIN = 23;
-const uint8_t GROUND_MAIN_PIN = 36;
+const uint8_t GROUND_DROGUE_PIN = 13;
+const uint8_t GROUND_MAIN_PIN = 23;
 
 const char DROGUE_MESSAGE[] = "D";
 const char MAIN_MESSAGE[] = "M";

@@ -2,7 +2,7 @@
 #define INITLORA_H
 
 #include "heltec.h"
-#include "./defs.h"
+#include "defs.h"
 
 void initHeltecLoRa()
 {

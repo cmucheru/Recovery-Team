@@ -5,6 +5,9 @@
 
 #include <Wire.h>
 
+#define FREQUENCY_BAND    915E6  //you can set band here directly,e.g. 868E6,915E6
+
+
 #define DEBUG 1
 #if DEBUG == 1
 #define debug(x) Serial.print(x)

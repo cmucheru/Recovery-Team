@@ -36,11 +36,15 @@
 const uint8_t MAIN_EJECTION_PIN= 23;
 const uint8_t DROGUE_EJECTION_PIN= 12;
 
+const uint8_t LORA_SPREADING_FACTOR = 7;
+
 const uint8_t GPS_TX_PIN = 13;
 const uint8_t GPS_RX_PIN = 37;
 
 const BaseType_t pro_cpu = 0;
 const BaseType_t app_cpu = 1;
+
+int packetSize = LoRa.parsePacket();
 
 
 //TODO: carry out tests to know how much time

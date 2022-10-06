@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"name": "Blinker",
+			"path": "..\\..\\..\\..\\PlatformIO\\Projects\\Blinker"
+		},
+		{
+			"name": "Heltec-LoRa",
+			"path": "..\\..\\..\\..\\PlatformIO\\Projects\\Heltec-LoRa"
+		}
+	],
+	"settings": {}
+}

@@ -1,12 +1,9 @@
 #ifndef DEFINITIONS_H
 #define DEFINITIONS_H
 
-
-
 #include <Wire.h>
 
-#define FREQUENCY_BAND    915E6  //you can set band here directly,e.g. 868E6,915E6
-
+#define FREQUENCY_BAND 915E6 // you can set band here directly,e.g. 868E6,915E6
 
 #define DEBUG 1
 #if DEBUG == 1
@@ -33,8 +30,8 @@
 #define SD_CS_PIN 5
 
 // Pin to start ejection charge
-const uint8_t MAIN_EJECTION_PIN= 23;
-const uint8_t DROGUE_EJECTION_PIN= 12;
+const uint8_t MAIN_EJECTION_PIN = 23;
+const uint8_t DROGUE_EJECTION_PIN = 12;
 
 const uint8_t LORA_SPREADING_FACTOR = 7;
 
@@ -44,12 +41,8 @@ const uint8_t GPS_RX_PIN = 37;
 const BaseType_t pro_cpu = 0;
 const BaseType_t app_cpu = 1;
 
-int packetSize = LoRa.parsePacket();
-
-
-//TODO: carry out tests to know how much time
+// TODO: carry out tests to know how much time
 const int EJECTION_PIN_ON_TIME_MS = 3000;
-
 
 // This struct is used to save all our datapoints.
 // It includes rocket altitude, accelerations in the x, y and z directions
@@ -72,7 +65,6 @@ struct GPSReadings
     float latitude;
     float longitude;
 };
-
 
 // SendValues contains the data points we will be sending over lora
 struct SendValues

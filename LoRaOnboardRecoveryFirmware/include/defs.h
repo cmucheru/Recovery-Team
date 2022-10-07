@@ -38,11 +38,17 @@ const uint8_t LORA_SPREADING_FACTOR = 7;
 const uint8_t GPS_TX_PIN = 13;
 const uint8_t GPS_RX_PIN = 37;
 
+// TODO: carry out tests to know how much time
+const int EJECTION_PIN_ON_TIME_MS = 3000;
+
 const BaseType_t pro_cpu = 0;
 const BaseType_t app_cpu = 1;
 
 // TODO: carry out tests to know how much time
 const int EJECTION_PIN_ON_TIME_MS = 3000;
+
+const char DROGUE_MESSAGE[] = "D";
+const char MAIN_MESSAGE[] = "M";
 
 // This struct is used to save all our datapoints.
 // It includes rocket altitude, accelerations in the x, y and z directions

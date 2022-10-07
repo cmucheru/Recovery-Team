@@ -44,9 +44,6 @@ const int EJECTION_PIN_ON_TIME_MS = 3000;
 const BaseType_t pro_cpu = 0;
 const BaseType_t app_cpu = 1;
 
-// TODO: carry out tests to know how much time
-const int EJECTION_PIN_ON_TIME_MS = 3000;
-
 const char DROGUE_MESSAGE[] = "D";
 const char MAIN_MESSAGE[] = "M";
 

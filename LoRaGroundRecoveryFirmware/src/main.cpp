@@ -36,7 +36,6 @@ void IRAM_ATTR sendEjectDrogueCommand()
 }
 void IRAM_ATTR sendEjectMainCommand()
 {
-
   BaseType_t checkIfYieldRequired;
   checkIfYieldRequired = xTaskResumeFromISR(MainChuteInterruptTaskHandle);
   portYIELD_FROM_ISR(checkIfYieldRequired);
@@ -56,6 +55,16 @@ void MainChuteInterruptTask(void *parameter)
   {
     vTaskSuspend(NULL);
     sendLoRaCommand(GROUND_MAIN_PIN);
+  }
+}
+
+//GPS Interrupt Task
+void GPSInterruptTask(void *parameter)
+{
+  for (;;)
+  {
+    vTaskSuspend(NULL);
+    sendGPSCommand(GPS_PIN);
   }
 }
 

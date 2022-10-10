@@ -39,7 +39,7 @@ const uint8_t GPS_TX_PIN = 13;
 const uint8_t GPS_RX_PIN = 37;
 
 // TODO: carry out tests to know how much time
-const int EJECTION_PIN_ON_TIME_MS = 3000;
+const int EJECTION_PIN_ON_TIME_MS = 1000;
 
 const BaseType_t pro_cpu = 0;
 const BaseType_t app_cpu = 1;
@@ -72,9 +72,6 @@ struct GPSReadings
 // SendValues contains the data points we will be sending over lora
 struct SendValues
 {
-    uint64_t timeStamp;
-    float altitude;
-    uint16_t state;
     float latitude;
     float longitude;
 };

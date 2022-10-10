@@ -5,16 +5,37 @@
 #include "defs.h"
 #include "heltec.h"
 
-
 void initHeltecLoRa()
 {
-    //disable OLED initialization
+    // disable OLED initialization
     Heltec.begin(false /*DisplayEnable Enable*/, true /*Heltec.LoRa disable*/, true /*Serial Enable */, true /* PABOOST Enable*/, FREQUENCY_BAND /*Long Band*/);
 
-    //Set LoRa Spreading Fator
+    // Set LoRa Spreading Fator
     LoRa.setSpreadingFactor(LORA_SPREADING_FACTOR);
 }
+char *printTransmitMessageLoRa(SendValues sv)
+{
+    // The assigned size is calculated to fit the string
+    char *message = (char *)pvPortMalloc(40);
 
+    if (!message)
+        return NULL;
 
+    snprintf(message, 40, "{\"latitude\":%.3f,\"longitude\":%.3f}\n", sv.latitude, sv.longitude);
+    return message;
+}
+void sendTelemetryLora(SendValues sv)
+{
+    LoRa.beginPacket();
+    char *message = printTransmitMessageLoRa(sv);
+    LoRa.print(message);
+    vPortFree(message);
+
+    // send packet
+    if (LoRa.endPacket())
+    {
+        debugln("Sent Lora Done");
+    }
+}
 
 #endif

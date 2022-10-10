@@ -55,9 +55,8 @@ The flight program is structured as a state machine with the following states: a
 |---|---| -----|
 | 0  | Pre-Flight Ground    | altitude >= 20m AGL  |
 | 1  | Powered Flight      |  acceleration <= 2m/s<sup>2</sup> for 0.1s |
-| 2  | Coasting      |  velocity < 0 to detect apogee|
-| 3  | Apogee   |  20m below apogee to deploy parachute  |
-| 4  | Chute Descent| altitude <= 20m AGL|
-| 5  | Post-flight Ground    |  No more events  |
+| 2  | Apogee   |  20m below apogee to deploy parachute  |
+| 3  | Chute Descent| altitude <= 20m AGL|
+| 4  | Post-flight Ground    |  No more events  |
 
 

@@ -54,7 +54,7 @@ void readGPSTask(void *parameter)
       droppedGPSPackets++;
     }
 
-    debugf("Dropped GPS Packets : %d\n", droppedGPSPackets);
+    // debugf("Dropped GPS Packets : %d\n", droppedGPSPackets);
 
     // yield to idle task
     vTaskDelay(10 / portTICK_PERIOD_MS);
@@ -63,9 +63,9 @@ void readGPSTask(void *parameter)
 void sendLoRaTask(void *parameter)
 {
   struct SendValues sv = {0};
-    struct GPSReadings gpsReadings = {0};
-    float latitude = 0;
-    float longitude = 0;
+  struct GPSReadings gpsReadings = {0};
+  float latitude = 0;
+  float longitude = 0;
 
   for (;;)
   {
@@ -74,9 +74,11 @@ void sendLoRaTask(void *parameter)
 
     if (xQueueReceive(gps_queue, (void *)&gpsReadings, 10) == pdTRUE)
     {
-      //TODO: start here
-      latitude = gpsReadings.latitude;
-      longitude = gpsReadings.longitude;
+      if (gpsReadings.longitude != 0 && gpsReadings.latitude != 0)
+      {
+        latitude = gpsReadings.latitude;
+        longitude = gpsReadings.longitude;
+      }
     }
     sendTelemetryLora(sv);
     vTaskDelay(10 / portTICK_PERIOD_MS);
@@ -120,6 +122,9 @@ void setup()
   setPinModes();
 
   init_gps();
+
+  // create GPS queue
+  gps_queue = xQueueCreate(gps_queue_length, sizeof(GPSReadings));
 
   // Create tasks on core 1
   xTaskCreatePinnedToCore(readGPSTask, "ReadGPSTask", 3000, NULL, 1, &GPSTaskHandle, app_cpu);

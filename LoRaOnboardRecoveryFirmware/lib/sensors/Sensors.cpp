@@ -1,15 +1,12 @@
-#ifndef INITSENSORS_H
-#define INITSENSORS_H
+#include "Sensors.h"
 #include <TinyGPS++.h>
-#include "defs.h"
 
 TinyGPSPlus gps;
+
 void init_gps()
 {
     Serial2.begin(GPS_BAUD_RATE, SERIAL_8N1, GPS_TX_PIN, GPS_RX_PIN);
 }
-
-// Get the gps readings from the gps sensor
 struct GPSReadings get_gps_readings()
 {
     struct GPSReadings gpsReadings = {0};
@@ -27,5 +24,3 @@ struct GPSReadings get_gps_readings()
 
     return gpsReadings;
 }
-
-#endif

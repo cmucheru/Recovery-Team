@@ -16,12 +16,12 @@ void initHeltecLoRa()
 char *printTransmitMessageLoRa(SendValues sv)
 {
     // The assigned size is calculated to fit the string
-    char *message = (char *)pvPortMalloc(40);
+    char *message = (char *)pvPortMalloc(60);
 
     if (!message)
         return NULL;
 
-    snprintf(message, 40, "{\"latitude\":%.3f,\"longitude\":%.3f}\n", sv.latitude, sv.longitude);
+    snprintf(message, 60, "{\"latitude\":%.7f,\"longitude\":%.7f}\n", sv.latitude, sv.longitude);
     return message;
 }
 void sendTelemetryLora(SendValues sv)
@@ -30,11 +30,10 @@ void sendTelemetryLora(SendValues sv)
     char *message = printTransmitMessageLoRa(sv);
     LoRa.print(message);
     vPortFree(message);
-
     // send packet
     if (LoRa.endPacket())
     {
-        debugln("Sent Lora Done");
+        // debugln("Sent Lora Done");
     }
 }
 

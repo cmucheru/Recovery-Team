@@ -35,8 +35,8 @@ const uint8_t DROGUE_EJECTION_PIN = 12;
 
 const uint8_t LORA_SPREADING_FACTOR = 7;
 
-const uint8_t GPS_TX_PIN = 13;
-const uint8_t GPS_RX_PIN = 37;
+const uint8_t GPS_TX_PIN = 2;
+const uint8_t GPS_RX_PIN = 17;
 
 // TODO: carry out tests to know how much time
 const int EJECTION_PIN_ON_TIME_MS = 1000;

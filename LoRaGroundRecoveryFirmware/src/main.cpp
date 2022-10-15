@@ -58,29 +58,22 @@ void MainChuteInterruptTask(void *parameter)
   }
 }
 
-//GPS Interrupt Task
-void GPSInterruptTask(void *parameter)
-{
-  for (;;)
-  {
-    vTaskSuspend(NULL);
-    sendGPSCommand(GPS_PIN);
-  }
-}
-
 void ListenDownStreamTask(void *parameter)
 {
   for (;;)
   {
-    // debugln("Normal Operation");
+    int packetSize = LoRa.parsePacket();
+    char gpsString[60];
+    for (int i = 0; i < packetSize; i++)
+    {
+      gpsString[i] = (char)LoRa.read();
+    }
+    debugln(gpsString);
     vTaskDelay(5);
   }
 }
-
-void setup()
+void setPinModes()
 {
-  initHeltecLoRa();
-
   // setup drogue button interrupt
   pinMode(GROUND_DROGUE_PIN, INPUT_PULLUP);                            // initialize pin HIGH
   attachInterrupt(GROUND_DROGUE_PIN, sendEjectDrogueCommand, FALLING); // press drogue push button
@@ -88,6 +81,11 @@ void setup()
   // setup main button interrupt
   pinMode(GROUND_MAIN_PIN, INPUT_PULLUP);                          // initialize pin HIGH
   attachInterrupt(GROUND_MAIN_PIN, sendEjectMainCommand, FALLING); // press drogue push button
+}
+
+void setup()
+{
+  initHeltecLoRa();
 
   // initialize core 0 tasks
   xTaskCreatePinnedToCore(ListenDownStreamTask, "ListenDownStreamTask", 3000, NULL, 1, &ListenDownStreamTaskHandle, pro_cpu);

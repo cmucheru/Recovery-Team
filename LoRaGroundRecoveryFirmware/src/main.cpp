@@ -1,94 +1,23 @@
-#include "../include/initlora.h"
-#include "../include/defs.h"
+#include "../lib/definitions/defs.h"
+#include <Tasks.h>
+#include <GNDLoRa.h>
+#include <Functions.h>
 
 TaskHandle_t ListenDownStreamTaskHandle = NULL;
 TaskHandle_t DrogueInterruptTaskHandle = NULL;
 TaskHandle_t MainChuteInterruptTaskHandle = NULL;
 
-void sendLoRaCommand(uint8_t chutePin)
-{
-  LoRa.beginPacket();
-  // send D if drogue , send M if main
-  if (chutePin == GROUND_DROGUE_PIN)
-  {
-    LoRa.print(DROGUE_MESSAGE);
-    if (LoRa.endPacket())
-    {
-      debugf("Sent %s\n", DROGUE_MESSAGE);
-    }
-  }
-  else if (chutePin == GROUND_MAIN_PIN)
-  {
-    LoRa.print(MAIN_MESSAGE);
-
-    if (LoRa.endPacket())
-    {
-      debugf("Sent %s\n", MAIN_MESSAGE);
-    }
-  }
-}
-
-void IRAM_ATTR sendEjectDrogueCommand()
-{
-  BaseType_t checkIfYieldRequired;
-  checkIfYieldRequired = xTaskResumeFromISR(DrogueInterruptTaskHandle);
-  portYIELD_FROM_ISR(checkIfYieldRequired);
-}
-void IRAM_ATTR sendEjectMainCommand()
-{
-  BaseType_t checkIfYieldRequired;
-  checkIfYieldRequired = xTaskResumeFromISR(MainChuteInterruptTaskHandle);
-  portYIELD_FROM_ISR(checkIfYieldRequired);
-}
-
-void DrogueInterruptTask(void *parameter)
-{
-  for (;;)
-  {
-    vTaskSuspend(NULL);
-    sendLoRaCommand(GROUND_DROGUE_PIN);
-  }
-}
-void MainChuteInterruptTask(void *parameter)
-{
-  for (;;)
-  {
-    vTaskSuspend(NULL);
-    sendLoRaCommand(GROUND_MAIN_PIN);
-  }
-}
-
-void ListenDownStreamTask(void *parameter)
-{
-  for (;;)
-  {
-    int packetSize = LoRa.parsePacket();
-    char gpsString[60];
-    for (int i = 0; i < packetSize; i++)
-    {
-      gpsString[i] = (char)LoRa.read();
-    }
-    debugln(gpsString);
-    vTaskDelay(5);
-  }
-}
-void setPinModes()
-{
-  // setup drogue button interrupt
-  pinMode(GROUND_DROGUE_PIN, INPUT_PULLUP);                            // initialize pin HIGH
-  attachInterrupt(GROUND_DROGUE_PIN, sendEjectDrogueCommand, FALLING); // press drogue push button
-
-  // setup main button interrupt
-  pinMode(GROUND_MAIN_PIN, INPUT_PULLUP);                          // initialize pin HIGH
-  attachInterrupt(GROUND_MAIN_PIN, sendEjectMainCommand, FALLING); // press drogue push button
-}
+const BaseType_t pro_cpu = 0;
+const BaseType_t app_cpu = 1;
 
 void setup()
 {
   initHeltecLoRa();
 
+  setPinModes();
+
   // initialize core 0 tasks
-  xTaskCreatePinnedToCore(ListenDownStreamTask, "ListenDownStreamTask", 3000, NULL, 1, &ListenDownStreamTaskHandle, pro_cpu);
+  //xTaskCreatePinnedToCore(ListenDownStreamGPSTask, "ListenDownStreamTask", 3000, NULL, 1, &ListenDownStreamTaskHandle, pro_cpu);
 
   // initialize core 1 tasks
   xTaskCreatePinnedToCore(DrogueInterruptTask, "DrogueInterruptTask", 3000, NULL, 1, &DrogueInterruptTaskHandle, app_cpu);
@@ -100,4 +29,6 @@ void setup()
 
 void loop()
 {
+  // delete loop task
+  vTaskDelete(NULL);
 }

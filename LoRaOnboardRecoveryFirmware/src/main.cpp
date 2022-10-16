@@ -1,130 +1,34 @@
-
-#include "heltec.h"
-#include "../include/defs.h"
-#include "../include/initlora.h"
-#include "../include/initsensors.h"
+#include "../lib/definitions/defs.h"
+#include <Sensors.h>
+#include <Ejection.h>
+#include <NKJLoRa.h>
+#include <Tasks.h>
 
 TaskHandle_t GPSTaskHandle = NULL;
 TaskHandle_t SendLoRaTaskHandle = NULL;
-TimerHandle_t ejectionTimerHandle = NULL;
 
-static uint16_t gps_queue_length = 100;
-static QueueHandle_t gps_queue;
+const BaseType_t pro_cpu = 0;
+const BaseType_t app_cpu = 1;
 
-//  switch off drogue pyro-channel
-void DrogueEjectionTimerCallback(TimerHandle_t ejectionTimerHandle)
-{
-  digitalWrite(DROGUE_EJECTION_PIN, LOW);
-}
+QueueHandle_t gps_queue;
 
-// switch off main pyro-channel
-void MainEjectionTimerCallback(TimerHandle_t ejectionTimerHandle)
-{
-  digitalWrite(MAIN_EJECTION_PIN, LOW);
-}
-
-// Ejection fires the explosive charge using a mosfet
-void ejection(uint8_t ejectionPin)
-{
-  if (ejectionPin == MAIN_EJECTION_PIN)
-  {
-    digitalWrite(MAIN_EJECTION_PIN, HIGH);
-    ejectionTimerHandle = xTimerCreate("MainEjectionTimer", EJECTION_PIN_ON_TIME_MS / portTICK_PERIOD_MS, pdFALSE, (void *)0, MainEjectionTimerCallback);
-    xTimerStart(ejectionTimerHandle, portMAX_DELAY);
-  }
-  else if (ejectionPin == DROGUE_EJECTION_PIN)
-  {
-    digitalWrite(DROGUE_EJECTION_PIN, HIGH);
-    ejectionTimerHandle = xTimerCreate("DrogueEjectionTimer", EJECTION_PIN_ON_TIME_MS / portTICK_PERIOD_MS, pdFALSE, (void *)0, DrogueEjectionTimerCallback);
-    xTimerStart(ejectionTimerHandle, portMAX_DELAY);
-  }
-}
-
-void readGPSTask(void *parameter)
-{
-  struct GPSReadings gpsReadings = {0};
-  static int droppedGPSPackets = 0;
-
-  for (;;)
-  {
-    gpsReadings = get_gps_readings();
-
-    if (xQueueSend(gps_queue, (void *)&gpsReadings, 0) != pdTRUE)
-    {
-      droppedGPSPackets++;
-    }
-
-    // debugf("Dropped GPS Packets : %d\n", droppedGPSPackets);
-
-    // yield to idle task
-    vTaskDelay(10 / portTICK_PERIOD_MS);
-  }
-}
-void sendLoRaTask(void *parameter)
-{
-  struct SendValues sv = {0};
-  struct GPSReadings gpsReadings = {0};
-  float latitude = 0;
-  float longitude = 0;
-
-  for (;;)
-  {
-    sv.latitude = latitude;
-    sv.longitude = longitude;
-
-    if (xQueueReceive(gps_queue, (void *)&gpsReadings, 10) == pdTRUE)
-    {
-      if (gpsReadings.longitude != 0 && gpsReadings.latitude != 0)
-      {
-        latitude = gpsReadings.latitude;
-        longitude = gpsReadings.longitude;
-      }
-    }
-    sendTelemetryLora(sv);
-    vTaskDelay(10 / portTICK_PERIOD_MS);
-  }
-}
-
-void onReceive(int packetSize)
-{
-
-  char command[2];
-  for (int i = 0; i < packetSize; i++)
-  {
-    command[i] = (char)LoRa.read();
-  }
-  if (strcmp(command, DROGUE_MESSAGE) == 0)
-  {
-    ejection(DROGUE_EJECTION_PIN);
-  }
-  else if (strcmp(command, MAIN_MESSAGE) == 0)
-  {
-    ejection(MAIN_EJECTION_PIN);
-  }
-  debugln(LoRa.packetRssi());
-}
-
-void setPinModes()
-{
-  pinMode(DROGUE_EJECTION_PIN, OUTPUT);
-  pinMode(MAIN_EJECTION_PIN, OUTPUT);
-}
+const uint16_t GPS_QUEUE_LENGTH = 100;
 
 void setup()
 {
   initHeltecLoRa();
 
-  // register the receive callback
-  // LoRa.onReceive(onReceive);
-  // LoRa.receive();
+  setEjectionPinModes();
 
-  // Set output pin modes
-  setPinModes();
+  // register the receive callback
+  LoRa.onReceive(onReceive);
+  LoRa.receive();
+
 
   init_gps();
 
   // create GPS queue
-  gps_queue = xQueueCreate(gps_queue_length, sizeof(GPSReadings));
+  gps_queue = xQueueCreate(GPS_QUEUE_LENGTH, sizeof(GPSReadings));
 
   // Create tasks on core 1
   xTaskCreatePinnedToCore(readGPSTask, "ReadGPSTask", 3000, NULL, 1, &GPSTaskHandle, app_cpu);
@@ -137,4 +41,5 @@ void setup()
 
 void loop()
 {
+  vTaskDelete(NULL);
 }

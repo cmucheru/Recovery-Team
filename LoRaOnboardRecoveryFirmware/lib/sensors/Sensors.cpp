@@ -3,6 +3,9 @@
 
 TinyGPSPlus gps;
 
+const uint8_t GPS_TX_PIN = 2;
+const uint8_t GPS_RX_PIN = 17;
+
 void init_gps()
 {
     Serial2.begin(GPS_BAUD_RATE, SERIAL_8N1, GPS_TX_PIN, GPS_RX_PIN);

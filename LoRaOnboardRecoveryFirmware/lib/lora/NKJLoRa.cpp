@@ -1,9 +1,15 @@
-#ifndef INITLORA_H
-#define INITLORA_H
+#include "NKJLoRa.h"
+#include <Ejection.h>
 
-#include "initlora.h"
-#include "defs.h"
-#include "heltec.h"
+
+const uint8_t LORA_SPREADING_FACTOR = 7;
+
+// Pins to start ejection charge
+extern uint8_t MAIN_EJECTION_PIN;
+extern uint8_t DROGUE_EJECTION_PIN;
+
+extern char DROGUE_MESSAGE[];
+extern char MAIN_MESSAGE[];
 
 void initHeltecLoRa()
 {
@@ -33,8 +39,24 @@ void sendTelemetryLora(SendValues sv)
     // send packet
     if (LoRa.endPacket())
     {
-        // debugln("Sent Lora Done");
+        //debugln("Sent Lora Done");
     }
 }
+void onReceive(int packetSize)
+{
 
-#endif
+    char command[2];
+    for (int i = 0; i < packetSize; i++)
+    {
+        command[i] = (char)LoRa.read();
+    }
+    if (strcmp(command, DROGUE_MESSAGE) == 0)
+    {
+        ejection(DROGUE_EJECTION_PIN);
+    }
+    else if (strcmp(command, MAIN_MESSAGE) == 0)
+    {
+        ejection(MAIN_EJECTION_PIN);
+    }
+    debugln(LoRa.packetRssi());
+}

@@ -21,11 +21,11 @@ void MainChuteInterruptTask(void *parameter)
     }
 }
 
-void ListenDownStreamGPSTask(void *parameter)
+void ListenDownStreamTask(void *parameter)
 {
     for (;;)
     {
-        getDownStreamGPS();
+        getDownStream();
         vTaskDelay(5);
     }
 }

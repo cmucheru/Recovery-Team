@@ -1,9 +1,16 @@
 #include "Sensors.h"
 #include <NKJLoRa.h>
+#include <FlightStatus.h>
+
 extern QueueHandle_t gps_queue;
+extern QueueHandle_t flight_status_queue;
+
+extern TaskHandle_t GetGPSTaskHandle;
+extern TaskHandle_t SendGPSLoRaTaskHandle;
 
 void readGPSTask(void *parameter)
 {
+    vTaskSuspend(NULL);
     struct GPSReadings gpsReadings = {0};
     static int droppedGPSPackets = 0;
 
@@ -16,23 +23,23 @@ void readGPSTask(void *parameter)
             droppedGPSPackets++;
         }
 
-        // debugf("Dropped GPS Packets : %d\n", droppedGPSPackets);
+        //debugf("Dropped GPS Packets : %d\n", droppedGPSPackets);
 
         // yield to idle task
         vTaskDelay(10 / portTICK_PERIOD_MS);
     }
 }
-void sendLoRaTask(void *parameter)
+void sendGPSLoRaTask(void *parameter)
 {
-    struct SendValues sv = {0};
+    vTaskSuspend(NULL);
     struct GPSReadings gpsReadings = {0};
     float latitude = 0;
     float longitude = 0;
 
     for (;;)
     {
-        sv.latitude = latitude;
-        sv.longitude = longitude;
+        gpsReadings.latitude = latitude;
+        gpsReadings.longitude = longitude;
 
         if (xQueueReceive(gps_queue, (void *)&gpsReadings, 10) == pdTRUE)
         {
@@ -41,8 +48,48 @@ void sendLoRaTask(void *parameter)
                 latitude = gpsReadings.latitude;
                 longitude = gpsReadings.longitude;
             }
+            sendLora(gpsReadings);
         }
-        sendTelemetryLora(sv);
         vTaskDelay(10 / portTICK_PERIOD_MS);
     }
+}
+
+void getStatusTask(void *parameter)
+{
+    struct FlightStatus flightStatus = {0};
+    static int droppedFlightStatusPackets = 0;
+    for (;;)
+    {
+        flightStatus = get_flight_status();
+        if (xQueueSend(flight_status_queue, (void *)&flightStatus, 0) != pdTRUE)
+        {
+            droppedFlightStatusPackets++;
+
+        }
+
+        //debugf("Dropped FlightStatus Packets : %d\n", droppedFlightStatusPackets);
+
+        // yield to idle task
+        vTaskDelay(10 / portTICK_PERIOD_MS);
+    }
+}
+
+void sendStatusLoRaTask(void *parameter)
+{
+    struct FlightStatus flightStatus = {0};
+    for (;;)
+    {
+        if (xQueueReceive(flight_status_queue, (void *)&flightStatus, 10) == pdTRUE)
+        {
+            sendLora(flightStatus);
+        }
+        // yield to idle task
+        vTaskDelay(10 / portTICK_PERIOD_MS);
+    }
+}
+
+void resumeGPSTasks()
+{
+    vTaskResume(GetGPSTaskHandle);
+    vTaskResume(SendGPSLoRaTaskHandle);
 }

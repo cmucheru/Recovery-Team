@@ -1,6 +1,8 @@
 #include "NKJLoRa.h"
 #include <Ejection.h>
-
+#include <Sensors.h>
+#include <FlightStatus.h>
+#include <Tasks.h>
 
 const uint8_t LORA_SPREADING_FACTOR = 7;
 
@@ -19,28 +21,52 @@ void initHeltecLoRa()
     // Set LoRa Spreading Fator
     LoRa.setSpreadingFactor(LORA_SPREADING_FACTOR);
 }
-char *printTransmitMessageLoRa(SendValues sv)
+char *printTransmitMessageLoRa(GPSReadings gpsReadings)
 {
     // The assigned size is calculated to fit the string
-    char *message = (char *)pvPortMalloc(60);
+    char *message = (char *)pvPortMalloc(40);
 
     if (!message)
         return NULL;
 
-    snprintf(message, 60, "{\"latitude\":%.7f,\"longitude\":%.7f}\n", sv.latitude, sv.longitude);
+    snprintf(message, 40, "{\"latitude\":%.7f,\"longitude\":%.7f}\n", gpsReadings.latitude, gpsReadings.longitude);
     return message;
 }
-void sendTelemetryLora(SendValues sv)
+void sendLora(GPSReadings gpsReadings)
 {
     LoRa.beginPacket();
-    char *message = printTransmitMessageLoRa(sv);
+    char *message = printTransmitMessageLoRa(gpsReadings);
     LoRa.print(message);
-    vPortFree(message);
     // send packet
     if (LoRa.endPacket())
     {
-        //debugln("Sent Lora Done");
+        //debugln(message);
     }
+    vPortFree(message);
+}
+char *printTransmitMessageLoRa(FlightStatus flightStatus)
+{
+    // The assigned size is calculated to fit the string
+    char *message = (char *)pvPortMalloc(90);
+
+    if (!message)
+        return NULL;
+
+    snprintf(message, 90, "{\"launched\":%d,\"drogueFired\":%d,\"mainFired\":%d,\"drogueSeparated\":%d,\"mainSeparated\":%d}\n", flightStatus.isLaunched, flightStatus.isPrimaryDrogueFired, flightStatus.isPrimaryMainFired, flightStatus.isDrogueSeparated, flightStatus.isMainSeparated);
+    return message;
+}
+
+void sendLora(FlightStatus flightStatus)
+{
+    LoRa.beginPacket();
+    char *message = printTransmitMessageLoRa(flightStatus);
+    LoRa.print(message);
+    // send packet
+    if (LoRa.endPacket())
+    {
+        debugln(message);
+    }
+    vPortFree(message);
 }
 void onReceive(int packetSize)
 {
@@ -57,6 +83,7 @@ void onReceive(int packetSize)
     else if (strcmp(command, MAIN_MESSAGE) == 0)
     {
         ejection(MAIN_EJECTION_PIN);
+        resumeGPSTasks();
     }
     debugln(LoRa.packetRssi());
 }

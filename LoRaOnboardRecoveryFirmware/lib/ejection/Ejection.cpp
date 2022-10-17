@@ -4,7 +4,7 @@ TimerHandle_t ejectionTimerHandle = NULL;
 
 // Pin to start ejection charge
 uint8_t MAIN_EJECTION_PIN = 23;
-uint8_t DROGUE_EJECTION_PIN = 12;
+uint8_t DROGUE_EJECTION_PIN = 22;
 
 // TODO: carry out tests to know how much time
 const int EJECTION_PIN_ON_TIME_MS = 1000;

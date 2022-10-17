@@ -13,6 +13,7 @@ struct GPSReadings
     float longitude;
 };
 
+
 struct GPSReadings get_gps_readings();
 void init_gps();
 

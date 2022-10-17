@@ -4,6 +4,6 @@
 
 void DrogueInterruptTask(void *parameter);
 void MainChuteInterruptTask(void *parameter);
-void ListenDownStreamGPSTask(void *parameter);
+void ListenDownStreamTask(void *parameter);
 
 #endif // TASKS_H

@@ -17,7 +17,7 @@ void setup()
   setPinModes();
 
   // initialize core 0 tasks
-  //xTaskCreatePinnedToCore(ListenDownStreamGPSTask, "ListenDownStreamTask", 3000, NULL, 1, &ListenDownStreamTaskHandle, pro_cpu);
+  xTaskCreatePinnedToCore(ListenDownStreamTask, "ListenDownStreamTask", 3000, NULL, 1, &ListenDownStreamTaskHandle, pro_cpu);
 
   // initialize core 1 tasks
   xTaskCreatePinnedToCore(DrogueInterruptTask, "DrogueInterruptTask", 3000, NULL, 1, &DrogueInterruptTaskHandle, app_cpu);

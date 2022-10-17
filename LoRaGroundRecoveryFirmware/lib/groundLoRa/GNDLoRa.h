@@ -7,6 +7,6 @@
 
 void initHeltecLoRa();
 void sendLoRaCommand(uint8_t chutePin);
-void getDownStreamGPS();
+void getDownStream();
 
 #endif // GNDLORA_H

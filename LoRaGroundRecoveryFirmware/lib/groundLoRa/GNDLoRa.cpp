@@ -38,12 +38,17 @@ void sendLoRaCommand(uint8_t chutePin)
         }
     }
 }
-void getDownStreamGPS(){
+void getDownStream()
+{
     int packetSize = LoRa.parsePacket();
-    char gpsString[60];
-    for (int i = 0; i < packetSize; i++)
+    if (packetSize > 0)
     {
-        gpsString[i] = (char)LoRa.read();
+        char gpsString[90];
+        for (int i = 0; i < packetSize; i++)
+        {
+            gpsString[i] = (char)LoRa.read();
+        }
+        gpsString[packetSize] = '\0';
+        debugln(gpsString);
     }
-    debugln(gpsString);
 }

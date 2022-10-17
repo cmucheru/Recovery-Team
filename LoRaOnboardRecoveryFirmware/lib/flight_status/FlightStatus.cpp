@@ -1,11 +1,5 @@
 #include <FlightStatus.h>
 
-bool isDrogueSeparated = false;
-bool isMainSeparated = false;
-bool isLaunched = false;
-bool isPrimaryDrogueFired = false;
-bool isPrimaryMainFired = false;
-
 struct FlightStatus get_flight_status()
 {
     struct FlightStatus flightStatus = {0};

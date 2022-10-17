@@ -13,5 +13,10 @@
 #define debugf(x, y)
 #endif // DEBUG
 
+extern volatile bool isDrogueSeparated;
+extern volatile bool isMainSeparated;
+extern volatile bool isLaunched;
+extern volatile bool isPrimaryDrogueFired;
+extern volatile bool isPrimaryMainFired;
 
 #endif // DEFS_H

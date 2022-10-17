@@ -64,7 +64,7 @@ void sendLora(FlightStatus flightStatus)
     // send packet
     if (LoRa.endPacket())
     {
-        debugln(message);
+        //debugln(message);
     }
     vPortFree(message);
 }

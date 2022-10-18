@@ -10,5 +10,6 @@ void IRAM_ATTR setDrogueSeparated();
 void IRAM_ATTR setMainSeparated();
 void IRAM_ATTR detectPrimaryMainEjected();
 void IRAM_ATTR detectPrimaryDrogueEjected();
+void IRAM_ATTR processUpStreamLoRa();
 
 #endif // INTERRUPTS_H

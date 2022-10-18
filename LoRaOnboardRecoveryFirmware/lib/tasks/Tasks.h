@@ -6,6 +6,7 @@ void sendGPSLoRaTask(void *parameter);
 void readGPSTask(void *parameter);
 void getStatusTask(void *parameter);
 void sendStatusLoRaTask(void *parameter);
+void OnReceiveTask(void *parameter);
 void resumeGPSTasks();
 
 #endif // TASKS_H

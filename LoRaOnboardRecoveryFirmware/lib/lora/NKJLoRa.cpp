@@ -6,13 +6,6 @@
 
 const uint8_t LORA_SPREADING_FACTOR = 7;
 
-// Pins to start ejection charge
-extern uint8_t MAIN_EJECTION_PIN;
-extern uint8_t DROGUE_EJECTION_PIN;
-
-extern char DROGUE_MESSAGE[];
-extern char MAIN_MESSAGE[];
-
 void initHeltecLoRa()
 {
     // disable OLED initialization
@@ -40,7 +33,7 @@ void sendLora(GPSReadings gpsReadings)
     // send packet
     if (LoRa.endPacket())
     {
-        //debugln(message);
+        debugln(message);
     }
     vPortFree(message);
 }
@@ -64,26 +57,7 @@ void sendLora(FlightStatus flightStatus)
     // send packet
     if (LoRa.endPacket())
     {
-        //debugln(message);
+        debugln(message);
     }
     vPortFree(message);
-}
-void onReceive(int packetSize)
-{
-
-    char command[2];
-    for (int i = 0; i < packetSize; i++)
-    {
-        command[i] = (char)LoRa.read();
-    }
-    if (strcmp(command, DROGUE_MESSAGE) == 0)
-    {
-        ejection(DROGUE_EJECTION_PIN);
-    }
-    else if (strcmp(command, MAIN_MESSAGE) == 0)
-    {
-        ejection(MAIN_EJECTION_PIN);
-        resumeGPSTasks();
-    }
-    debugln(LoRa.packetRssi());
 }

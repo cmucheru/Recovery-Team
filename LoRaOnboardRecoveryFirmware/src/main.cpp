@@ -13,6 +13,7 @@ TaskHandle_t SendGPSLoRaTaskHandle = NULL;
 TaskHandle_t GetGPSTaskHandle = NULL;
 TaskHandle_t GetFlightStatusTaskHandle = NULL;
 TaskHandle_t SendFlightStatusLoRaTaskHandle = NULL;
+TaskHandle_t OnReceiveTaskHandle = NULL;
 
 QueueHandle_t gps_queue;
 QueueHandle_t flight_status_queue;
@@ -25,12 +26,8 @@ void setup()
   initHeltecLoRa();
 
   setEjectionPinModes();
-  
-  setInterruptPins();
 
-  // register the receive callback
-  // LoRa.onReceive(onReceive);
-  // LoRa.receive();
+  setInterruptPins();
 
   init_gps();
 
@@ -45,6 +42,7 @@ void setup()
   // Create tasks on core 0
   xTaskCreatePinnedToCore(sendGPSLoRaTask, "LoRaGPSTask", 2500, NULL, 1, &SendGPSLoRaTaskHandle, pro_cpu);
   xTaskCreatePinnedToCore(sendStatusLoRaTask, "SendFlightStatusTask", 2500, NULL, 1, &SendFlightStatusLoRaTaskHandle, pro_cpu);
+  xTaskCreatePinnedToCore(OnReceiveTask, "OnReceiveTask", 1000, NULL, 2, &OnReceiveTaskHandle, pro_cpu);
 
   vTaskDelete(NULL);
 }

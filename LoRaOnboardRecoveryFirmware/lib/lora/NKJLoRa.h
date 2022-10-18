@@ -17,5 +17,4 @@ char *printTransmitMessageLoRa(FlightStatus flightStatus);
 void sendLora(FlightStatus flightStatus);
 char *printTransmitMessageLoRa(GPSReadings gpsReadings);
 void sendLora(GPSReadings gpsReadings);
-void onReceive(int packetSize);
 #endif // NAKUJALORA_H

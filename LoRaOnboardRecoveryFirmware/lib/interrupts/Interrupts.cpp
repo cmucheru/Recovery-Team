@@ -9,6 +9,7 @@ const uint8_t PRIMARY_MAIN_DETECT_PIN = 37;
 
 TimerHandle_t motorTimerHandle = NULL;
 extern uint8_t MAIN_EJECTION_PIN;
+extern TaskHandle_t OnReceiveTaskHandle;
 
 volatile bool isDrogueSeparated = false;
 volatile bool isMainSeparated = false;
@@ -35,6 +36,9 @@ void setInterruptPins()
 
     pinMode(PRIMARY_MAIN_DETECT_PIN, INPUT_PULLDOWN);
     attachInterrupt(digitalPinToInterrupt(PRIMARY_MAIN_DETECT_PIN), detectPrimaryMainEjected, RISING);
+
+    // pinMode(DIO0, INPUT);
+    // attachInterrupt(digitalPinToInterrupt(DIO0), processUpStreamLoRa, RISING);
 }
 
 void MotorEjectTimerCallback(TimerHandle_t ejectionTimerHandle)
@@ -66,4 +70,8 @@ void IRAM_ATTR detectPrimaryMainEjected()
 void IRAM_ATTR detectPrimaryDrogueEjected()
 {
     isPrimaryDrogueFired = true;
+}
+void IRAM_ATTR processUpStreamLoRa()
+{
+    vTaskResume(OnReceiveTaskHandle);
 }

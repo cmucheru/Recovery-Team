@@ -1,12 +1,21 @@
 #include "Sensors.h"
 #include <NKJLoRa.h>
 #include <FlightStatus.h>
+#include <Tasks.h>
+#include <Ejection.h>
 
 extern QueueHandle_t gps_queue;
 extern QueueHandle_t flight_status_queue;
 
 extern TaskHandle_t GetGPSTaskHandle;
 extern TaskHandle_t SendGPSLoRaTaskHandle;
+
+// Pins to start ejection charge
+extern uint8_t MAIN_EJECTION_PIN;
+extern uint8_t DROGUE_EJECTION_PIN;
+
+extern char DROGUE_MESSAGE[];
+extern char MAIN_MESSAGE[];
 
 void readGPSTask(void *parameter)
 {
@@ -23,7 +32,7 @@ void readGPSTask(void *parameter)
             droppedGPSPackets++;
         }
 
-        //debugf("Dropped GPS Packets : %d\n", droppedGPSPackets);
+        // debugf("Dropped GPS Packets : %d\n", droppedGPSPackets);
 
         // yield to idle task
         vTaskDelay(10 / portTICK_PERIOD_MS);
@@ -64,10 +73,9 @@ void getStatusTask(void *parameter)
         if (xQueueSend(flight_status_queue, (void *)&flightStatus, 0) != pdTRUE)
         {
             droppedFlightStatusPackets++;
-
         }
 
-        //debugf("Dropped FlightStatus Packets : %d\n", droppedFlightStatusPackets);
+        // debugf("Dropped FlightStatus Packets : %d\n", droppedFlightStatusPackets);
 
         // yield to idle task
         vTaskDelay(10 / portTICK_PERIOD_MS);
@@ -85,6 +93,29 @@ void sendStatusLoRaTask(void *parameter)
         }
         // yield to idle task
         vTaskDelay(10 / portTICK_PERIOD_MS);
+    }
+}
+void OnReceiveTask(void *param)
+{
+    for (;;)
+    {
+        vTaskSuspend(NULL);
+        int packetSize = LoRa.parsePacket();
+        char command[2];
+        for (int i = 0; i < packetSize; i++)
+        {
+            command[i] = (char)LoRa.read();
+        }
+        if (strcmp(command, DROGUE_MESSAGE) == 0)
+        {
+            ejection(DROGUE_EJECTION_PIN);
+        }
+        else if (strcmp(command, MAIN_MESSAGE) == 0)
+        {
+            ejection(MAIN_EJECTION_PIN);
+            resumeGPSTasks();
+        }
+        debugln(LoRa.packetRssi());
     }
 }
 

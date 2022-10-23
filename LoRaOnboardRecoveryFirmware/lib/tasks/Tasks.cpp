@@ -58,6 +58,7 @@ void sendGPSLoRaTask(void *parameter)
                 longitude = gpsReadings.longitude;
             }
             sendLora(gpsReadings);
+            LoRa.receive();
         }
         vTaskDelay(10 / portTICK_PERIOD_MS);
     }
@@ -90,6 +91,7 @@ void sendStatusLoRaTask(void *parameter)
         if (xQueueReceive(flight_status_queue, (void *)&flightStatus, 10) == pdTRUE)
         {
             sendLora(flightStatus);
+            LoRa.receive();
         }
         // yield to idle task
         vTaskDelay(10 / portTICK_PERIOD_MS);

@@ -37,7 +37,7 @@ void setInterruptPins()
     pinMode(PRIMARY_MAIN_DETECT_PIN, INPUT_PULLDOWN);
     attachInterrupt(digitalPinToInterrupt(PRIMARY_MAIN_DETECT_PIN), detectPrimaryMainEjected, RISING);
 
-    attachInterrupt(digitalPinToInterrupt(DIO0), processUpStreamLoRa, RISING);
+    // attachInterrupt(digitalPinToInterrupt(DIO0), processUpStreamLoRa, RISING);
 }
 
 void MotorEjectTimerCallback(TimerHandle_t ejectionTimerHandle)

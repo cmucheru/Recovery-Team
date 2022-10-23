@@ -126,3 +126,22 @@ void resumeGPSTasks()
     vTaskResume(GetGPSTaskHandle);
     vTaskResume(SendGPSLoRaTaskHandle);
 }
+
+void onReceive(int packetSize)
+{
+    char command[2];
+    for (int i = 0; i < packetSize; i++)
+    {
+        command[i] = (char)LoRa.read();
+    }
+    if (strcmp(command, DROGUE_MESSAGE) == 0)
+    {
+        ejection(DROGUE_EJECTION_PIN);
+    }
+    else if (strcmp(command, MAIN_MESSAGE) == 0)
+    {
+        ejection(MAIN_EJECTION_PIN);
+        resumeGPSTasks();
+    }
+    debugln(LoRa.packetRssi());
+}

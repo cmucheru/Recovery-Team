@@ -27,6 +27,8 @@ void setup()
 
   setEjectionPinModes();
 
+  LoRa.onReceive(onReceive);
+
   setInterruptPins();
 
   init_gps();

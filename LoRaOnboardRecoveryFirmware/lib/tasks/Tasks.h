@@ -8,5 +8,6 @@ void getStatusTask(void *parameter);
 void sendStatusLoRaTask(void *parameter);
 void OnReceiveTask(void *parameter);
 void resumeGPSTasks();
+void onReceive(int packetSize);
 
 #endif // TASKS_H

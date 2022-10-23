@@ -37,8 +37,7 @@ void setInterruptPins()
     pinMode(PRIMARY_MAIN_DETECT_PIN, INPUT_PULLDOWN);
     attachInterrupt(digitalPinToInterrupt(PRIMARY_MAIN_DETECT_PIN), detectPrimaryMainEjected, RISING);
 
-    // pinMode(DIO0, INPUT);
-    // attachInterrupt(digitalPinToInterrupt(DIO0), processUpStreamLoRa, RISING);
+    attachInterrupt(digitalPinToInterrupt(DIO0), processUpStreamLoRa, RISING);
 }
 
 void MotorEjectTimerCallback(TimerHandle_t ejectionTimerHandle)
@@ -73,5 +72,7 @@ void IRAM_ATTR detectPrimaryDrogueEjected()
 }
 void IRAM_ATTR processUpStreamLoRa()
 {
-    vTaskResume(OnReceiveTaskHandle);
+    BaseType_t checkIfYieldRequired;
+    checkIfYieldRequired = xTaskResumeFromISR(OnReceiveTaskHandle);
+    portYIELD_FROM_ISR(checkIfYieldRequired);
 }

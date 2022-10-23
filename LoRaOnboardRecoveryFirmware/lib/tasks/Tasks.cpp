@@ -100,6 +100,7 @@ void OnReceiveTask(void *param)
     for (;;)
     {
         vTaskSuspend(NULL);
+        LoRa.receive();
         int packetSize = LoRa.parsePacket();
         char command[2];
         for (int i = 0; i < packetSize; i++)
@@ -116,6 +117,7 @@ void OnReceiveTask(void *param)
             resumeGPSTasks();
         }
         debugln(LoRa.packetRssi());
+        vTaskDelay(10 / portTICK_PERIOD_MS);
     }
 }
 

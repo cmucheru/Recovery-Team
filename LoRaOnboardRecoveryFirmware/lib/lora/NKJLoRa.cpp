@@ -61,3 +61,4 @@ void sendLora(FlightStatus flightStatus)
     }
     vPortFree(message);
 }
+

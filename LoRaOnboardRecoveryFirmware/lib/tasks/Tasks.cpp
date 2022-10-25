@@ -115,7 +115,7 @@ void OnReceiveTask(void *param)
         else if (strcmp(command, MAIN_MESSAGE) == 0)
         {
             ejection(MAIN_EJECTION_PIN);
-            resumeGPSTasks();
+            //resumeGPSTasks();
         }
         debugln(LoRa.packetRssi());
         vTaskDelay(10 / portTICK_PERIOD_MS);
@@ -142,7 +142,7 @@ void onReceive(int packetSize)
     else if (strcmp(command, MAIN_MESSAGE) == 0)
     {
         ejection(MAIN_EJECTION_PIN);
-        resumeGPSTasks();
+        //resumeGPSTasks();
     }
     debugln(LoRa.packetRssi());
 }

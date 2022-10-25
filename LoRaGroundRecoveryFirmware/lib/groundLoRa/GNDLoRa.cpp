@@ -22,7 +22,7 @@ void sendLoRaCommand(uint8_t chutePin)
     // send D if drogue , send M if main
     if (chutePin == GROUND_DROGUE_PIN)
     {
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 10; i++)
         {
             LoRa.print(DROGUE_MESSAGE);
             if (LoRa.endPacket())
@@ -33,7 +33,7 @@ void sendLoRaCommand(uint8_t chutePin)
     }
     else if (chutePin == GROUND_MAIN_PIN)
     {
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 10; i++)
         {
             LoRa.print(MAIN_MESSAGE);
             if (LoRa.endPacket())

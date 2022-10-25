@@ -43,9 +43,9 @@ void setup()
   xTaskCreatePinnedToCore(getStatusTask, "GetFlightStatusTask", 2500, NULL, 1, &GetFlightStatusTaskHandle, app_cpu);
 
   // Create tasks on core 0
-  xTaskCreatePinnedToCore(sendGPSLoRaTask, "LoRaGPSTask", 2500, NULL, 1, &SendGPSLoRaTaskHandle, pro_cpu);
-  xTaskCreatePinnedToCore(sendStatusLoRaTask, "SendFlightStatusTask", 2500, NULL, 1, &SendFlightStatusLoRaTaskHandle, pro_cpu);
-  //xTaskCreatePinnedToCore(OnReceiveTask, "OnReceiveTask", 1000, NULL, 2, &OnReceiveTaskHandle, pro_cpu);
+  //xTaskCreatePinnedToCore(sendGPSLoRaTask, "LoRaGPSTask", 2500, NULL, 1, &SendGPSLoRaTaskHandle, pro_cpu);
+  //xTaskCreatePinnedToCore(sendStatusLoRaTask, "SendFlightStatusTask", 2500, NULL, 1, &SendFlightStatusLoRaTaskHandle, pro_cpu);
+  //xTaskCreatePinnedToCore(OnReceiveTask, "OnReceiveTask", 1000, NULL, 1, &OnReceiveTaskHandle, pro_cpu);
 
   vTaskDelete(NULL);
 }

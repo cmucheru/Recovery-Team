@@ -22,19 +22,24 @@ void sendLoRaCommand(uint8_t chutePin)
     // send D if drogue , send M if main
     if (chutePin == GROUND_DROGUE_PIN)
     {
-        LoRa.print(DROGUE_MESSAGE);
-        if (LoRa.endPacket())
+        for (int i = 0; i < 5; i++)
         {
-            debugf("Sent %s\n", DROGUE_MESSAGE);
+            LoRa.print(DROGUE_MESSAGE);
+            if (LoRa.endPacket())
+            {
+                debugf("Sent %s\n", DROGUE_MESSAGE);
+            }
         }
     }
     else if (chutePin == GROUND_MAIN_PIN)
     {
-        LoRa.print(MAIN_MESSAGE);
-
-        if (LoRa.endPacket())
+        for (int i = 0; i < 5; i++)
         {
-            debugf("Sent %s\n", MAIN_MESSAGE);
+            LoRa.print(MAIN_MESSAGE);
+            if (LoRa.endPacket())
+            {
+                debugf("Sent %s\n", MAIN_MESSAGE);
+            }
         }
     }
 }
@@ -43,7 +48,7 @@ void getDownStream()
     int packetSize = LoRa.parsePacket();
     if (packetSize > 0)
     {
-        char gpsString[90];
+        char gpsString[50];
         for (int i = 0; i < packetSize; i++)
         {
             gpsString[i] = (char)LoRa.read();

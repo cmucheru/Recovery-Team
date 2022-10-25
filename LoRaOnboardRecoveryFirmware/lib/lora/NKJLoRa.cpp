@@ -17,12 +17,12 @@ void initHeltecLoRa()
 char *printTransmitMessageLoRa(GPSReadings gpsReadings)
 {
     // The assigned size is calculated to fit the string
-    char *message = (char *)pvPortMalloc(40);
+    char *message = (char *)pvPortMalloc(15);
 
     if (!message)
         return NULL;
 
-    snprintf(message, 40, "{\"latitude\":%.7f,\"longitude\":%.7f}\n", gpsReadings.latitude, gpsReadings.longitude);
+    snprintf(message, 15, "{%.7f,%.7f}\n", gpsReadings.latitude, gpsReadings.longitude);
     return message;
 }
 void sendLora(GPSReadings gpsReadings)
@@ -40,12 +40,12 @@ void sendLora(GPSReadings gpsReadings)
 char *printTransmitMessageLoRa(FlightStatus flightStatus)
 {
     // The assigned size is calculated to fit the string
-    char *message = (char *)pvPortMalloc(90);
+    char *message = (char *)pvPortMalloc(25);
 
     if (!message)
         return NULL;
 
-    snprintf(message, 90, "{\"launched\":%d,\"drogueFired\":%d,\"mainFired\":%d,\"drogueSeparated\":%d,\"mainSeparated\":%d}\n", flightStatus.isLaunched, flightStatus.isPrimaryDrogueFired, flightStatus.isPrimaryMainFired, flightStatus.isDrogueSeparated, flightStatus.isMainSeparated);
+    snprintf(message, 25, "{%d,%d,%d,%d,%d,%d,%d}\n", flightStatus.isLaunched, flightStatus.isPrimaryDrogueFired, flightStatus.isPrimaryMainFired, flightStatus.isDrogueSeparated, flightStatus.isMainSeparated, flightStatus.isManualDrogueFired, flightStatus.isManualMainFired);
     return message;
 }
 
@@ -61,4 +61,3 @@ void sendLora(FlightStatus flightStatus)
     }
     vPortFree(message);
 }
-

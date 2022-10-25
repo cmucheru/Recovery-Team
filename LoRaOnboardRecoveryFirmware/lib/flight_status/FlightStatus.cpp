@@ -9,6 +9,8 @@ struct FlightStatus get_flight_status()
     flightStatus.isPrimaryDrogueFired = isPrimaryDrogueFired;
     flightStatus.isPrimaryMainFired = isPrimaryMainFired;
     flightStatus.isLaunched = isLaunched;
+    flightStatus.isManualDrogueFired = isManualDrogueFired;
+    flightStatus.isManualMainFired = isManualMainFired;
 
     return flightStatus;
 }

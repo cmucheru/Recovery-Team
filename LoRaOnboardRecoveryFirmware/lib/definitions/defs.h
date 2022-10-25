@@ -18,5 +18,7 @@ extern volatile bool isMainSeparated;
 extern volatile bool isLaunched;
 extern volatile bool isPrimaryDrogueFired;
 extern volatile bool isPrimaryMainFired;
+extern volatile bool isManualMainFired;
+extern volatile bool isManualDrogueFired;
 
 #endif // DEFS_H

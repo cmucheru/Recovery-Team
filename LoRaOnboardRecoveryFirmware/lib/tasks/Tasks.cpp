@@ -101,7 +101,6 @@ void OnReceiveTask(void *param)
 {
     for (;;)
     {
-        vTaskSuspend(NULL);
         LoRa.receive();
         int packetSize = LoRa.parsePacket();
         char command[2];

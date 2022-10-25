@@ -36,9 +36,6 @@ void setInterruptPins()
 
     pinMode(PRIMARY_MAIN_DETECT_PIN, INPUT_PULLDOWN);
     attachInterrupt(digitalPinToInterrupt(PRIMARY_MAIN_DETECT_PIN), detectPrimaryMainEjected, RISING);
-
-    // mapDIO();
-    // attachInterrupt(digitalPinToInterrupt(DIO0), processUpStreamLoRa, RISING);
 }
 
 void MotorEjectTimerCallback(TimerHandle_t ejectionTimerHandle)
@@ -70,20 +67,4 @@ void IRAM_ATTR detectPrimaryMainEjected()
 void IRAM_ATTR detectPrimaryDrogueEjected()
 {
     isPrimaryDrogueFired = true;
-}
-void IRAM_ATTR processUpStreamLoRa()
-{
-    BaseType_t checkIfYieldRequired;
-    checkIfYieldRequired = xTaskResumeFromISR(OnReceiveTaskHandle);
-    portYIELD_FROM_ISR(checkIfYieldRequired);
-}
-void mapDIO()
-{
-    uint8_t response;
-    digitalWrite(LORA_DEFAULT_SS_PIN, LOW);
-    SPI.beginTransaction(SPISettings(8E6, MSBFIRST, SPI_MODE0));
-    SPI.transfer(0x40 | 0x80);
-    response = SPI.transfer(0x00);
-    SPI.endTransaction();
-    digitalWrite(LORA_DEFAULT_SS_PIN, HIGH);
 }

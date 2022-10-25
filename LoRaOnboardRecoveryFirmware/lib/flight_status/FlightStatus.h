@@ -10,6 +10,8 @@ struct FlightStatus
     bool isPrimaryMainFired;
     bool isMainSeparated;
     bool isDrogueSeparated;
+    bool isManualMainFired;
+    bool isManualDrogueFired;
 };
 
 struct FlightStatus get_flight_status();

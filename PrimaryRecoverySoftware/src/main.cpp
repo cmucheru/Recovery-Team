@@ -103,18 +103,18 @@ void GetDataTask(void *parameter)
         vTaskDelay(10 / portTICK_PERIOD_MS);
     }
 }
-void readGPSTask(void *parameter)
-{
+// void readGPSTask(void *parameter)
+// {
 
-    struct GPSReadings gpsReadings = {0};
+//     struct GPSReadings gpsReadings = {0};
 
-    for (;;)
-    {
-        //gpsReadings = get_gps_readings();
-        // yield to idle task on core 1
-        vTaskDelay(10 / portTICK_PERIOD_MS);
-    }
-}
+//     for (;;)
+//     {
+//         // gpsReadings = get_gps_readings();
+//         //  yield to idle task on core 1
+//         vTaskDelay(10 / portTICK_PERIOD_MS);
+//     }
+// }
 
 void setup()
 {
@@ -126,16 +126,18 @@ void setup()
     pinMode(MAIN_EJECTION_PIN, OUTPUT);
     ejection(DROGUE_EJECTION_PIN);
     init_sensors();
+    void initFlashMemory();
 
     // get the base_altitude
     BASE_ALTITUDE = get_base_altitude();
 
     // initialize core tasks
     xTaskCreatePinnedToCore(GetDataTask, "GetDataTask", 3000, NULL, 1, &GetDataTaskHandle, pro_cpu);
-    xTaskCreatePinnedToCore(readGPSTask, "ReadGPSTask", 3000, NULL, 1, &GPSTaskHandle, app_cpu);
+    // xTaskCreatePinnedToCore(readGPSTask, "ReadGPSTask", 3000, NULL, 1, &GPSTaskHandle, app_cpu);
 
     vTaskDelete(NULL);
 }
 void loop()
 {
+    vTaskDelete(NULL);
 }

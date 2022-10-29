@@ -43,11 +43,15 @@ struct SendValues formart_send_data(LogData readings)
 float get_base_altitude()
 {
   float altitude = 0;
-  SensorReadings readings;
+  struct FilteredValues filtered_values = {0};
+  struct SensorReadings readings = {0};
+
   for (int i = 0; i < 100; i++)
   {
     readings = get_readings();
-    altitude = altitude + readings.altitude;
+    // TODO: very important to know the orientation of the altimeter
+    filtered_values = kalmanUpdate(readings.altitude, readings.ay);
+    altitude = altitude + filtered_values.displacement;
   }
   altitude = altitude / 100.0;
   debugf("Base Altitude is %.3f\n", altitude);
